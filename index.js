@@ -62,6 +62,7 @@ async function run() {
       res.send(result)
     })
 
+    // user related api
     // create post api for user
     app.post('/users', async (req, res)=>{
       const user = req.body;
@@ -73,6 +74,19 @@ async function run() {
       const result = await userCollections.insertOne(user)
       res.send(result)
     })
+
+    // create get api for all user
+    app.get('/users', async (req, res)=>{
+      const result = await userCollections.find().toArray()
+      res.send(result)
+    })
+    
+    app.delete('/users/:id', async (req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await userCollections.deleteOne(query)
+      res.send(result)
+    })  
   } finally {
   }
 }
