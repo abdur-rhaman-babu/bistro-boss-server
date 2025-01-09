@@ -65,11 +65,18 @@ async function run() {
       next();
     };
 
+    // menu related apis
     // create get api for menu
     app.get("/menu", async (req, res) => {
       const result = await menuCollections.find().toArray();
       res.send(result);
     });
+
+    app.post('/menu', verifyToken, verifyAdmin, async (req, res)=>{
+        const item = req.body;
+        const result = await menuCollections.insertOne(item)
+        res.send(result)
+    })
 
     // create get api for reviews
     app.get("/reviews", async (req, res) => {
@@ -121,7 +128,7 @@ async function run() {
     });
 
     // create delete api for user
-    app.delete("/users/:id", async (req, res) => {
+    app.delete("/users/:id", verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await userCollections.deleteOne(query);
@@ -129,7 +136,7 @@ async function run() {
     });
 
     // create admin api
-    app.patch("/users/:id", async (req, res) => {
+    app.patch("/users/:id", verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const updatedUser = {
